@@ -1,1 +1,64 @@
 # barcode-generator
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>바코드 생성기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js" defer></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #barcode-container {
+      margin-top: 20px;
+    }
+    svg {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h2>바코드 생성기</h2>
+  <p id="barcode-value">로딩 중...</p>
+  <div id="barcode-container">
+    <svg id="barcode"></svg>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function getTimeHHMMSS() {
+        const now = new Date();
+        const pad = n => n.toString().padStart(2, '0');
+        return pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+      }
+
+      const prefix = "91231269273867";
+      const timePart = getTimeHHMMSS();
+      const barcodeData = prefix + timePart;
+
+      const barcodeValueEl = document.getElementById("barcode-value");
+      const barcodeSvg = document.getElementById("barcode");
+
+      if (barcodeValueEl && barcodeSvg) {
+        barcodeValueEl.innerText = "바코드 값: " + barcodeData;
+
+        try {
+          JsBarcode(barcodeSvg, barcodeData, {
+            format: "CODE128",
+            lineColor: "#000000",
+            width: 2,
+            height: 100,
+            displayValue: true
+          });
+        } catch (error) {
+          barcodeValueEl.innerText = "바코드 생성 오류: " + error.message;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
